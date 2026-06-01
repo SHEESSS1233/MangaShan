@@ -114,9 +114,7 @@ export function MangaCard({
           <Heart
             size={15}
             className={`transition-all duration-300 ${
-              isFav
-                ? "fill-red-500 text-red-500"
-                : "text-white/80"
+              isFav ? "fill-red-500 text-red-500" : "text-white/80"
             }`}
             strokeWidth={isFav ? 0 : 2}
           />
@@ -177,7 +175,8 @@ export function MangaCard({
         <div
           className="absolute inset-x-0 bottom-0 h-[2px]"
           style={{
-            background: "linear-gradient(90deg, transparent, #3AC8BA, transparent)",
+            background:
+              "linear-gradient(90deg, transparent, #3AC8BA, transparent)",
             opacity: hovered ? 1 : 0,
             transition: "opacity 0.3s ease",
           }}

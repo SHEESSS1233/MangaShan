@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, BookMarked, Search, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const links = [
   { href: "/", icon: Home, label: "Home" },
@@ -14,12 +14,7 @@ const links = [
 
 export default function BottomNav() {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
   const [pressedIndex, setPressedIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <>
@@ -51,7 +46,7 @@ export default function BottomNav() {
           }}
         >
           {links.map((link, idx) => {
-            const isActive = mounted && pathname === link.href;
+            const isActive = pathname === link.href;
             const isPressed = pressedIndex === idx;
             const Icon = link.icon;
 
@@ -85,13 +80,17 @@ export default function BottomNav() {
                 )}
 
                 {/* Icon container */}
-                <div className="relative flex items-center justify-center mb-0.5" style={{ height: 32 }}>
+                <div
+                  className="relative flex items-center justify-center mb-0.5"
+                  style={{ height: 32 }}
+                >
                   {/* Glow behind active icon */}
                   {isActive && (
                     <div
                       className="absolute inset-0 rounded-full"
                       style={{
-                        background: "radial-gradient(circle, rgba(58,200,186,0.25) 0%, transparent 70%)",
+                        background:
+                          "radial-gradient(circle, rgba(58,200,186,0.25) 0%, transparent 70%)",
                         filter: "blur(6px)",
                         transform: "scale(1.6)",
                       }}
@@ -103,8 +102,11 @@ export default function BottomNav() {
                     strokeWidth={isActive ? 2.5 : 1.8}
                     style={{
                       color: isActive ? "#3AC8BA" : "rgba(255,255,255,0.35)",
-                      transition: "color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
-                      transform: isActive ? "scale(1.1) translateY(-1px)" : "scale(1)",
+                      transition:
+                        "color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+                      transform: isActive
+                        ? "scale(1.1) translateY(-1px)"
+                        : "scale(1)",
                       position: "relative",
                       zIndex: 1,
                     }}
