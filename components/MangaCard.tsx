@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Heart, Star, BookOpen } from "lucide-react";
 import { useFavorites } from "@/lib/store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollingTitle } from "./ScrollingTitle";
 
 interface MangaCardProps {
@@ -23,13 +23,8 @@ export function MangaCard({
   large = false,
 }: MangaCardProps) {
   const { toggleFavorite, isFavorite } = useFavorites();
-  const [mounted, setMounted] = useState(false);
   const [hovered, setHovered] = useState(false);
   const isFav = isFavorite(link);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -119,11 +114,11 @@ export function MangaCard({
           <Heart
             size={15}
             className={`transition-all duration-300 ${
-              mounted && isFav
+              isFav
                 ? "fill-red-500 text-red-500"
                 : "text-white/80"
             }`}
-            strokeWidth={mounted && isFav ? 0 : 2}
+            strokeWidth={isFav ? 0 : 2}
           />
         </button>
 
