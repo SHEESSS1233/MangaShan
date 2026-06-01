@@ -4,42 +4,24 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MangaCard } from "@/components/MangaCard";
 import { ScrollingTitle } from "@/components/ScrollingTitle";
-import { Loader2, Search, SlidersHorizontal, Bell } from "lucide-react";
+import { Loader2, Search, SlidersHorizontal, Bell, Flame, ChevronRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { motion } from "motion/react";
 
 const Swiper = dynamic(() => import("swiper/react").then((mod) => mod.Swiper), {
   ssr: false,
-  loading: () => <div className="h-64 bg-[#1A1D24] rounded-lg animate-pulse" />,
+  loading: () => <div className="h-[420px] bg-[#0E1118] rounded-3xl animate-pulse mx-6" />,
 });
 const SwiperSlide = dynamic(
   () => import("swiper/react").then((mod) => mod.SwiperSlide),
-  {
-    ssr: false,
-  },
+  { ssr: false }
 );
 
-import { EffectCoverflow, Autoplay } from "swiper/modules";
+import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      staggerChildren: 0.05,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
-};
+import "swiper/css/pagination";
 
 export default function Home() {
   const router = useRouter();
@@ -70,9 +52,7 @@ export default function Home() {
   }, []);
 
   const availableTabs = ["All", ...categories.map((c) => c.category)];
-  // Ensure active tab defaults to 'All'
 
-  // Filter logic
   let displayContent = null;
 
   if (activeTab === "All") {
@@ -86,28 +66,32 @@ export default function Home() {
     const recommendations = Array.from(uniqueItemsMap.values()).slice(0, 15);
 
     displayContent = (
-      <motion.div
-        className="space-y-8 pb-32"
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-      >
-        {/* Recommendation Slider */}
+      <div className="space-y-10 pb-36 animate-fade-up">
+        {/* Hero Slider */}
         {recommendations.length > 0 && (
-          <motion.div variants={itemVariants} className="space-y-4 mt-2">
+          <div className="space-y-5 mt-2">
+            {/* Section Header */}
             <div className="flex items-center justify-between px-6">
-              <div>
-                <h2 className="text-2xl font-black text-white bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
-                  Recommendations
-                </h2>
-                <p className="text-xs font-semibold text-white/50 uppercase tracking-wider mt-1">
-                  Pilihan khusus untuk Anda
-                </p>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#3AC8BA] to-[#1A9088] flex items-center justify-center shadow-lg shadow-[#3AC8BA]/20">
+                  <Sparkles size={15} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-white tracking-tight leading-none">
+                    Rekomendasi
+                  </h2>
+                  <p className="text-[10px] font-semibold text-white/35 uppercase tracking-widest mt-0.5">
+                    Pilihan untuk Anda
+                  </p>
+                </div>
               </div>
-              <button className="text-xs font-bold text-[#3AC8BA] hover:text-[#4AD8CB] px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all\">
-                Lihat Semua
+              <button className="flex items-center gap-1 text-xs font-bold text-[#3AC8BA] hover:text-white transition-colors px-3 py-1.5 rounded-xl hover:bg-white/5">
+                Semua
+                <ChevronRight size={13} />
               </button>
             </div>
+
+            {/* Swiper */}
             <div className="w-full relative">
               <Swiper
                 effect={"coverflow"}
@@ -115,219 +99,290 @@ export default function Home() {
                 centeredSlides={true}
                 slidesPerView={"auto"}
                 coverflowEffect={{
-                  rotate: 50,
-                  stretch: 0,
-                  depth: 100,
-                  modifier: 1,
-                  slideShadows: true,
+                  rotate: 0,
+                  stretch: 60,
+                  depth: 200,
+                  modifier: 1.2,
+                  slideShadows: false,
                 }}
                 loop={true}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                }}
-                modules={[EffectCoverflow, Autoplay]}
-                className="w-full pb-8"
+                autoplay={{ delay: 3500, disableOnInteraction: false }}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                modules={[EffectCoverflow, Autoplay, Pagination]}
+                className="w-full pb-10 hero-swiper"
               >
                 {recommendations.map((manga, i) => (
-                  <SwiperSlide key={i} className="!w-[240px] !h-[340px]">
+                  <SwiperSlide key={i} className="!w-[260px] !h-[370px]">
                     <Link
                       href={`/manga?url=${encodeURIComponent(manga.link)}`}
-                      className="w-full h-full rounded-3xl overflow-hidden relative group block"
+                      className="w-full h-full relative block"
+                      style={{ borderRadius: "24px", overflow: "hidden" }}
                     >
                       <img
                         src={manga.thumb}
                         alt={manga.title}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-                      {/* Gradient overlay similar to Billie Eilish UI */}
-                      <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-[#13151A] via-[rgba(19,21,26,0.6)] to-transparent"></div>
-                      <div className="absolute inset-x-0 bottom-0 p-5 z-10 flex flex-col justify-end h-full">
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/20">
+
+                      {/* Gradient */}
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, transparent 35%, rgba(8,10,15,0.75) 65%, rgba(8,10,15,0.97) 100%)",
+                        }}
+                      />
+
+                      {/* HOT Badge */}
+                      <div
+                        className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 z-10"
+                        style={{
+                          background: "rgba(239,68,68,0.85)",
+                          backdropFilter: "blur(8px)",
+                          borderRadius: "10px",
+                          boxShadow: "0 4px 12px rgba(239,68,68,0.4)",
+                        }}
+                      >
+                        <Flame size={11} className="text-white fill-white" />
+                        <span className="text-[10px] font-black text-white tracking-wider">
+                          HOT
+                        </span>
+                      </div>
+
+                      {/* Bottom Info */}
+                      <div className="absolute inset-x-0 bottom-0 z-10 p-4">
+                        <div
+                          className="p-3 rounded-2xl"
+                          style={{
+                            background: "rgba(255,255,255,0.06)",
+                            backdropFilter: "blur(16px)",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                          }}
+                        >
                           <ScrollingTitle
                             text={manga.title}
-                            className="font-bold text-white drop-shadow-md text-center"
+                            className="font-bold text-white text-sm text-center"
                           />
                           {manga.desc && (
-                            <p className="text-xs text-white/80 line-clamp-1 font-medium mt-1 text-center drop-shadow-md flex items-center justify-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#3AC8BA] inline-block"></span>
-                              {manga.desc.substring(0, 20)}
+                            <p className="text-[11px] text-[#3AC8BA] font-semibold mt-1.5 text-center truncate">
+                              {manga.desc.substring(0, 24)}
                             </p>
                           )}
                         </div>
-                      </div>
-                      <div className="absolute top-4 right-4 bg-[#3AC8BA] text-[#13151A] text-xs font-black px-3 py-1.5 rounded-full shadow-lg">
-                        HOT
                       </div>
                     </Link>
                   </SwiperSlide>
                 ))}
               </Swiper>
             </div>
-          </motion.div>
+          </div>
         )}
 
+        {/* Category Sections */}
         {categories.map((cat, idx) => {
-          // Different layout based on index % 3
           const layoutType = idx % 3;
 
           if (layoutType === 0) {
-            // Layout 0: Horizontal Carousel
             return (
-              <motion.div
-                variants={itemVariants}
-                key={cat.category}
-                className="space-y-3"
-              >
+              <div key={cat.category} className="space-y-4">
                 <div className="flex items-center justify-between px-6">
-                  <h2 className="text-xl font-black text-white">
+                  <h2 className="text-base font-black text-white tracking-tight">
                     {cat.category}
                   </h2>
                   <button
                     onClick={() => setActiveTab(cat.category)}
-                    className="text-sm font-bold text-[#3AC8BA]"
+                    className="flex items-center gap-1 text-xs font-bold text-[#3AC8BA]"
                   >
-                    See All
+                    See All <ChevronRight size={13} />
                   </button>
                 </div>
-                <div className="flex overflow-x-auto gap-4 px-6 pb-4 hide-scrollbar snap-x scroll-pl-6">
+                <div className="flex overflow-x-auto gap-3 px-6 pb-2 hide-scrollbar snap-x scroll-pl-6">
                   {cat.items.map((manga, i) => (
-                    <div
-                      key={i}
-                      className="min-w-[160px] max-w-[160px] shrink-0 snap-start"
-                    >
+                    <div key={i} className="min-w-[148px] max-w-[148px] shrink-0 snap-start">
                       <MangaCard {...manga} />
                     </div>
                   ))}
-                  <div className="w-2 shrink-0"></div>
+                  <div className="w-2 shrink-0" />
                 </div>
-              </motion.div>
+              </div>
             );
           } else if (layoutType === 1) {
-            // Layout 1: Grid (first 4 items)
             return (
-              <motion.div
-                variants={itemVariants}
-                key={cat.category}
-                className="space-y-3 px-6"
-              >
+              <div key={cat.category} className="space-y-4 px-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-black text-white">
+                  <h2 className="text-base font-black text-white tracking-tight">
                     {cat.category}
                   </h2>
                   <button
                     onClick={() => setActiveTab(cat.category)}
-                    className="text-sm font-bold text-[#3AC8BA]"
+                    className="flex items-center gap-1 text-xs font-bold text-[#3AC8BA]"
                   >
-                    See All
+                    See All <ChevronRight size={13} />
                   </button>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   {cat.items.slice(0, 4).map((manga, i) => (
                     <div key={i} className="w-full">
                       <MangaCard {...manga} />
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             );
           } else {
-            // Layout 2: Vertical List
             return (
-              <motion.div
-                variants={itemVariants}
-                key={cat.category}
-                className="space-y-3 px-6"
-              >
+              <div key={cat.category} className="space-y-4 px-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-black text-white">
+                  <h2 className="text-base font-black text-white tracking-tight">
                     {cat.category}
                   </h2>
                   <button
                     onClick={() => setActiveTab(cat.category)}
-                    className="text-sm font-bold text-[#3AC8BA]"
+                    className="flex items-center gap-1 text-xs font-bold text-[#3AC8BA]"
                   >
-                    See All
+                    See All <ChevronRight size={13} />
                   </button>
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   {cat.items.slice(0, 3).map((manga, i) => (
                     <Link
                       href={`/manga?url=${encodeURIComponent(manga.link)}`}
                       key={i}
-                      className="flex gap-4 p-3 bg-[#1C1F26] rounded-2xl border border-white/5 items-center group"
+                      className="flex gap-4 p-3.5 items-center group"
+                      style={{
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.06)",
+                        borderRadius: "18px",
+                        transition: "background 0.2s, border-color 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLElement).style.background = "rgba(58,200,186,0.05)";
+                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(58,200,186,0.2)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
+                        (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)";
+                      }}
                     >
-                      <div className="w-16 h-20 shrink-0 rounded-xl bg-[#13151A] relative shadow-sm">
+                      {/* Rank number */}
+                      <span
+                        className="font-black shrink-0"
+                        style={{
+                          fontSize: "22px",
+                          color: i === 0 ? "#3AC8BA" : i === 1 ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.15)",
+                          width: "28px",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {i + 1}
+                      </span>
+                      <div
+                        className="w-14 h-[72px] shrink-0 relative"
+                        style={{ borderRadius: "12px", overflow: "hidden", background: "#0E1118" }}
+                      >
                         <Image
                           src={manga.thumb}
                           alt={manga.title}
                           fill
-                          className="object-cover rounded-xl group-hover:scale-105 transition-transform"
+                          className="object-cover"
                           unoptimized
                         />
                       </div>
                       <div className="flex-1 min-w-0">
                         <ScrollingTitle
                           text={manga.title}
-                          className="font-bold text-white group-hover:text-[#3AC8BA] transition-colors"
+                          className="font-bold text-white text-sm"
                         />
-                        <p className="text-xs text-gray-500 font-medium mt-1">
-                          {manga.desc}
+                        <p
+                          className="mt-1 truncate"
+                          style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", fontWeight: 500 }}
+                        >
+                          {manga.desc || "Update terbaru"}
                         </p>
                       </div>
                     </Link>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             );
           }
         })}
-      </motion.div>
+      </div>
     );
   } else {
     const selectedCat = categories.find((c) => c.category === activeTab);
     displayContent = selectedCat ? (
-      <motion.div
-        className="px-6 grid grid-cols-2 gap-4 pb-32"
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-      >
+      <div className="px-6 grid grid-cols-2 gap-3 pb-36 animate-fade-up">
         {selectedCat.items.map((manga, i) => (
-          <motion.div variants={itemVariants} key={i}>
+          <div key={i}>
             <MangaCard {...manga} />
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
     ) : (
       <div className="px-6 py-10 flex flex-col items-center">
-        <p className="text-gray-500">Kategori kosong.</p>
+        <p className="text-white/30">Kategori kosong.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 bg-[#13151A] min-h-screen pb-20">
-      {/* Header: Eth / Balance and Profile */}
-      <div className="px-6 pt-12 pb-2 flex justify-between items-center z-30">
-        <div className="flex items-center gap-2 bg-[#1C1F26] px-4 py-2 rounded-2xl border border-white/5">
-          <svg
-            className="w-4 h-4 text-[#3AC8BA]"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+    <div className="bg-[#0A0C10] min-h-screen pb-20">
+
+      {/* Header */}
+      <div
+        className="px-6 pt-14 pb-4 flex justify-between items-center sticky top-0 z-30"
+        style={{
+          background: "linear-gradient(180deg, rgba(10,12,16,0.98) 0%, rgba(10,12,16,0.85) 80%, transparent 100%)",
+          backdropFilter: "blur(20px)",
+        }}
+      >
+        {/* Logo */}
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{
+              background: "linear-gradient(135deg, #3AC8BA 0%, #1A9088 100%)",
+              boxShadow: "0 4px 14px rgba(58,200,186,0.35)",
+            }}
           >
-            <polygon points="12 2 2 12 12 22 22 12" />
-          </svg>
-          <span className="font-bold text-white text-sm">Komikku.</span>
+            <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="12 2 2 12 12 22 22 12" />
+            </svg>
+          </div>
+          <span className="font-black text-white text-[17px] tracking-tight">
+            Komikku
+            <span className="text-[#3AC8BA]">.</span>
+          </span>
         </div>
-        <div className="flex items-center gap-3">
-          <button className="w-10 h-10 rounded-full bg-[#1C1F26] border border-white/5 flex items-center justify-center relative">
-            <Bell className="w-4 h-4 text-gray-400" />
-            <span className="absolute top-[10px] right-[10px] w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-2.5">
+          <button
+            className="w-9 h-9 rounded-xl flex items-center justify-center relative"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <Bell size={16} className="text-white/70" />
+            <span
+              className="absolute"
+              style={{
+                top: 8,
+                right: 8,
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#EF4444",
+                border: "1.5px solid #0A0C10",
+              }}
+            />
           </button>
           <Link
             href="/profile"
-            className="w-10 h-10 rounded-full border border-white/5 opacity-90 hover:opacity-100 relative overflow-hidden"
+            className="w-9 h-9 rounded-xl overflow-hidden relative"
+            style={{ border: "1.5px solid rgba(58,200,186,0.3)" }}
           >
             <img
               src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fun&backgroundColor=252830"
@@ -338,83 +393,115 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Fake Search Bar */}
-      <div className="px-6 py-2">
+      {/* Search Bar */}
+      <div className="px-6 pt-1 pb-3">
         <div
           onClick={() => router.push("/search")}
-          className="w-full bg-[#1C1F26] rounded-full px-5 py-4 flex items-center gap-3 border border-white/5 cursor-pointer hover:bg-[#202530] transition-colors"
+          className="w-full flex items-center gap-3 cursor-pointer"
+          style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "16px",
+            padding: "13px 18px",
+            transition: "background 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)";
+            (e.currentTarget as HTMLElement).style.borderColor = "rgba(58,200,186,0.2)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)";
+          }}
         >
-          <Search className="w-5 h-5 text-gray-500" />
-          <span className="text-gray-500 font-medium flex-1 text-sm">
-            Ape, naruto...
+          <Search size={16} className="text-white/30 shrink-0" />
+          <span className="text-white/30 font-medium flex-1 text-sm">
+            Cari manga, manhwa...
           </span>
-          <SlidersHorizontal className="w-5 h-5 text-gray-500" />
+          <div
+            className="px-2 py-1 rounded-lg"
+            style={{ background: "rgba(58,200,186,0.1)", border: "1px solid rgba(58,200,186,0.2)" }}
+          >
+            <SlidersHorizontal size={12} className="text-[#3AC8BA]" />
+          </div>
         </div>
       </div>
 
-      {/* Categories Horizontal Tabs */}
+      {/* Tab Pills */}
       <div className="py-2">
-        <div className="flex overflow-x-auto gap-3 px-6 hide-scrollbar snap-x scroll-pl-6">
+        <div className="flex overflow-x-auto gap-2 px-6 hide-scrollbar snap-x scroll-pl-6">
           {availableTabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-5 py-2.5 rounded-full font-bold text-sm shrink-0 snap-start transition-colors ${activeTab === tab ? "bg-[#3AC8BA] text-[#13151A]" : "bg-transparent text-gray-400 hover:text-white hover:bg-[#1A1D24]"}`}
+              className="shrink-0 snap-start font-bold text-xs transition-all duration-250"
+              style={{
+                padding: "8px 16px",
+                borderRadius: "12px",
+                background:
+                  activeTab === tab
+                    ? "linear-gradient(135deg, #3AC8BA 0%, #1A9088 100%)"
+                    : "rgba(255,255,255,0.04)",
+                color: activeTab === tab ? "#fff" : "rgba(255,255,255,0.4)",
+                border: activeTab === tab
+                  ? "1px solid transparent"
+                  : "1px solid rgba(255,255,255,0.06)",
+                boxShadow: activeTab === tab ? "0 4px 12px rgba(58,200,186,0.3)" : "none",
+                transform: activeTab === tab ? "scale(1.03)" : "scale(1)",
+              }}
             >
               {tab}
             </button>
           ))}
-          <div className="w-2 shrink-0"></div>
+          <div className="w-2 shrink-0" />
         </div>
       </div>
 
       {/* Content */}
       {loading ? (
-        <div className="space-y-8 pb-32">
-          <div className="px-6 space-y-3 mt-2">
-            <div className="w-48 h-8 rounded-xl shimmer mb-2"></div>
-            <div className="flex overflow-x-auto gap-4 hide-scrollbar snap-x scroll-pl-6 px-6 -mx-6">
+        <div className="space-y-10 pb-36 mt-4">
+          <div className="px-6 space-y-4">
+            <div className="w-40 h-7 rounded-xl shimmer" />
+            <div className="flex gap-4 overflow-hidden">
               {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="min-w-[240px] h-[340px] rounded-3xl shimmer shrink-0 snap-start"
-                ></div>
+                <div key={i} className="min-w-[260px] h-[370px] rounded-3xl shimmer shrink-0" />
               ))}
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between px-6">
-              <div className="w-32 h-7 rounded-lg shimmer"></div>
-              <div className="w-16 h-4 rounded-lg shimmer"></div>
+              <div className="w-32 h-5 rounded-lg shimmer" />
+              <div className="w-16 h-4 rounded-lg shimmer" />
             </div>
-            <div className="flex overflow-x-auto gap-4 px-6 hide-scrollbar snap-x scroll-pl-6">
+            <div className="flex gap-3 px-6 overflow-hidden">
               {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="min-w-[160px] h-[240px] rounded-2xl shimmer shrink-0 snap-start"
-                ></div>
+                <div key={i} className="min-w-[148px] h-[220px] rounded-2xl shimmer shrink-0" />
               ))}
             </div>
           </div>
-          <div className="space-y-3 px-6">
+          <div className="space-y-4 px-6">
             <div className="flex items-center justify-between">
-              <div className="w-32 h-7 rounded-lg shimmer"></div>
-              <div className="w-16 h-4 rounded-lg shimmer"></div>
+              <div className="w-32 h-5 rounded-lg shimmer" />
+              <div className="w-16 h-4 rounded-lg shimmer" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-full h-[240px] rounded-2xl shimmer"
-                ></div>
+                <div key={i} className="w-full h-[220px] rounded-2xl shimmer" />
               ))}
             </div>
           </div>
         </div>
       ) : error ? (
         <div className="px-6 py-10">
-          <div className="bg-[#1A1D24] text-red-400 p-6 rounded-3xl border border-red-500/20 font-medium shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-            <p>{error}</p>
+          <div
+            className="p-6 flex flex-col items-center text-center space-y-3"
+            style={{
+              background: "rgba(239,68,68,0.06)",
+              border: "1px solid rgba(239,68,68,0.15)",
+              borderRadius: "20px",
+            }}
+          >
+            <p className="text-red-400 font-medium text-sm">{error}</p>
           </div>
         </div>
       ) : (
@@ -422,52 +509,32 @@ export default function Home() {
       )}
 
       <style jsx global>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         .shimmer {
-          background: linear-gradient(
-            90deg,
-            #1a1d24 25%,
-            #252a36 50%,
-            #1a1d24 75%
-          );
+          background: linear-gradient(90deg, #12151c 25%, #1a1f29 50%, #12151c 75%);
           background-size: 200% 100%;
-          animation: shimmer 1.5s infinite;
+          animation: shimmer 1.6s infinite;
         }
         @keyframes shimmer {
-          0% {
-            background-position: 200% 0;
-          }
-          100% {
-            background-position: -200% 0;
-          }
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
         }
 
-        /* Modern title bounce animation */
-        .title-container {
-          container-type: inline-size;
-          width: 100%;
-          overflow: hidden;
+        .hero-swiper .swiper-pagination-bullet {
+          background: rgba(255,255,255,0.3);
+          opacity: 1;
+          width: 6px;
+          height: 6px;
         }
-        .group:hover .title-container {
-          mask-image: linear-gradient(
-            90deg,
-            #000 0%,
-            #000 90%,
-            transparent 100%
-          );
-          -webkit-mask-image: linear-gradient(
-            90deg,
-            #000 0%,
-            #000 90%,
-            transparent 100%
-          );
+        .hero-swiper .swiper-pagination-bullet-active {
+          background: #3AC8BA;
+          width: 20px;
+          border-radius: 3px;
         }
+
+        .title-container { container-type: inline-size; width: 100%; overflow: hidden; }
         .title-bounce {
           display: block;
           white-space: nowrap;
@@ -482,14 +549,8 @@ export default function Home() {
           animation: bounce-text 3s ease-in-out infinite alternate;
         }
         @keyframes bounce-text {
-          0%,
-          15% {
-            transform: translateX(0);
-          }
-          85%,
-          100% {
-            transform: translateX(min(0px, calc(100cqw - 100%)));
-          }
+          0%, 15% { transform: translateX(0); }
+          85%, 100% { transform: translateX(min(0px, calc(100cqw - 100%))); }
         }
       `}</style>
     </div>
