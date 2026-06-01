@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+.animate-marquee-text {
+  animation: marquee-text 4s linear infinite;
+}
+
+@keyframes marquee-text {
+  0%, 20% { transform: translateX(0); }
+  80%, 100% { transform: translateX(var(--scroll-dist, -50px)); }
+}

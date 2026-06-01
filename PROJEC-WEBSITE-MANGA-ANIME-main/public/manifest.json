@@ -1,0 +1,16 @@
+{
+  "name": "MangaShan",
+  "short_name": "MangaShan",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0B0E",
+  "theme_color": "#3AC8BA",
+  "description": "Aplikasi baca manga terupdate di indonesia persembahan SHANN"
+}
