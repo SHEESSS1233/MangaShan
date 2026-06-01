@@ -96,11 +96,16 @@ export default function Home() {
         {recommendations.length > 0 && (
           <motion.div variants={itemVariants} className="space-y-4 mt-2">
             <div className="flex items-center justify-between px-6">
-              <h2 className="text-2xl font-black text-white">
-                Recommendations
-              </h2>
-              <button className="text-sm font-bold text-[#3AC8BA]">
-                View All
+              <div>
+                <h2 className="text-2xl font-black text-white bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent">
+                  Recommendations
+                </h2>
+                <p className="text-xs font-semibold text-white/50 uppercase tracking-wider mt-1">
+                  Pilihan khusus untuk Anda
+                </p>
+              </div>
+              <button className="text-xs font-bold text-[#3AC8BA] hover:text-[#4AD8CB] px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all\">
+                Lihat Semua
               </button>
             </div>
             <div className="w-full relative">
