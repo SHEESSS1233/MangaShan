@@ -11,7 +11,6 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
-  output: "standalone",
   outputFileTracingRoot: path.join(__dirname),
   // Allow access to remote image placeholder.
   images: {
