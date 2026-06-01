@@ -9,9 +9,7 @@ export default function FavoritesPage() {
     const { favorites } = useFavorites();
     const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    
 
     if (!mounted) {
         return <div className="min-h-screen bg-[#13151A]" />; // blank placeholder until hydration
@@ -49,3 +47,4 @@ export default function FavoritesPage() {
         </div>
     );
 }
+

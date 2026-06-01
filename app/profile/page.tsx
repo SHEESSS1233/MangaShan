@@ -16,9 +16,7 @@ export default function ProfilePage() {
   const { favorites } = useFavorites();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  
 
   const favCount = mounted ? favorites.length : 0;
 
@@ -176,3 +174,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+
