@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -11,6 +12,7 @@ const nextConfig: NextConfig = {
   compress: true,
   productionBrowserSourceMaps: false,
   output: "standalone",
+  outputFileTracingRoot: path.join(__dirname),
   // Allow access to remote image placeholder.
   images: {
     formats: ["image/avif", "image/webp"],
