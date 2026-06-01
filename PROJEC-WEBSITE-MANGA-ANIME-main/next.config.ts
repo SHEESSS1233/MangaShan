@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
+  output: "standalone",
   // Allow access to remote image placeholder.
   images: {
     formats: ["image/avif", "image/webp"],
